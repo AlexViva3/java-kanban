@@ -1,6 +1,10 @@
-public class Main {
 
+public class Main {
     public static void main(String[] args) {
-        System.out.println("Поехали!");
+        ManagerTasks manager = new ManagerTasks();
+        Task task = new Task();
+        EpicTusk epic = new EpicTusk();
+        SubEpicTusk subEpic = new SubEpicTusk();
+
     }
 }
