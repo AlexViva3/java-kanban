@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ManagerTasks {
-    HashMap<Integer, Task> tasks = new HashMap<>();
-    HashMap<Integer, EpicTusk> epics = new HashMap<>();
-    HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, EpicTusk> epics = new HashMap<>();
+    private final HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
     private int nextId = 1;
 
     public void addTask(Task task) {
@@ -44,18 +44,29 @@ public class ManagerTasks {
 
     }
 
+    public void epicCheckStatus(EpicTusk epic) {
+        int newStat = 0;
+        for (SubEpicTusk subtask : getSubEpicTasks()) {
+            if (subtask.getStatus() == StatusTask.IN_PROGRESS) {
+                epic.setStatus(StatusTask.IN_PROGRESS);
+                return;
+            }
+            if (subtask.getStatus() == StatusTask.NEW) {
+                newStat++;
+            }
+        }
+        if (newStat == getSubEpicTasks().size()) {
+            epic.setStatus(StatusTask.NEW);
+        } else {
+            epic.setStatus(StatusTask.DONE);
+        }
+    }
+
     public void updateEpic(EpicTusk epic) {
-        tasks.put(epic.getId(), epic);
+        epics.put(epic.getId(), epic);
         StatusTask status;
 
-        if (epic.getStatus() == StatusTask.NEW) {
-            status = StatusTask.NEW;
-        } else if (epic.getStatus() == StatusTask.DONE) {
-            status = StatusTask.DONE;
-        } else {
-            status = StatusTask.IN_PROGRESS;
-        }
-        epic.setStatus(status);
+        epicCheckStatus(epic);
 
     }
 
@@ -90,6 +101,7 @@ public class ManagerTasks {
         EpicTusk epic = epics.get(subEpic.getSubId());
         epic.getEpicIds().add(subEpic.getId());
 
+        epicCheckStatus(epic);
 
     }
 
@@ -101,9 +113,17 @@ public class ManagerTasks {
         subEpics.put(subEpic.getId(), subEpic);
     }
 
-    public void removeSubEpicTask(int id) {
+    public void removeSubtaskById (int id, ArrayList<EpicTusk> epics) {
         subEpics.remove(id);
+        for (EpicTusk epic : epics) {
+            if (epic.getEpicIds().contains(id)) {
+                epic.getEpicIds().remove(Integer.valueOf(id));
+                break;
+            }
+        }
+        epicCheckStatus(epics.get(id));
     }
+
     public void removeAllSubEpic() {
         subEpics.clear();
     }
