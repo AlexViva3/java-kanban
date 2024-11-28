@@ -23,7 +23,7 @@ public class Main {
         manager.addSubEpic(subEpic2);
         manager.addSubEpic(subEpic3);
         manager.removeTask(1);
-        manager.removeTask(2);
+
 
 
 
