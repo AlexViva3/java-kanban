@@ -5,14 +5,14 @@ public class SubEpicTusk extends Task {
         super(name, description, status);
     }
 
-    public int getSubId() {
-        return subId;
+    public int getEpicID () {
+        return epicID ;
     }
 
     public void setSubId(int subId) {
-        this.subId = subId;
+        this.epicID  = epicID ;
     }
 
-    private int subId;
+    private int epicID ;
     // Это подзадача эпика
 }

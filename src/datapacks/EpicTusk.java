@@ -3,18 +3,18 @@ package datapacks;
 import java.util.ArrayList;
 
 public class EpicTusk extends Task {
-    private ArrayList<Integer> epicIds = new ArrayList<>();
+    private ArrayList<Integer> subIDs = new ArrayList<>();
 
     public EpicTusk(String name, String description, StatusTask status) {
         super(name, description, status);
     }
 
     public ArrayList<Integer> getEpicIds() {
-        return epicIds;
+        return subIDs;
     }
 
-    public void setEpicIds(ArrayList<Integer> epicIds) {
-        this.epicIds = epicIds;
+    public void setEpicIds(ArrayList<Integer> subIDs) {
+        this.subIDs = subIDs;
     }
     // это эпик
 }

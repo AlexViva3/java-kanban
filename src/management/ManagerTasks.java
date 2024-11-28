@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ManagerTasks {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, EpicTusk> epics = new HashMap<>();
-    private final HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
-    private int nextId = 1;
+    private  HashMap<Integer, Task> tasks = new HashMap<>();
+    private  HashMap<Integer, EpicTusk> epics = new HashMap<>();
+    private  HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
+    private int nextId = 0;
 
     public void addTask(Task task) {
         task.setId(nextId++);
@@ -35,12 +35,12 @@ public class ManagerTasks {
     }
 
     public Task takeTaskForId(int id) {
-         return tasks.get(id);
+        return tasks.get(id);
     }
 
     public void addEpic(EpicTusk epic) {
         epic.setId(nextId++);
-        tasks.put(epic.getId(), epic);
+        epics.put(epic.getId(), epic);
 
     }
 
@@ -64,7 +64,6 @@ public class ManagerTasks {
 
     public void updateEpic(EpicTusk epic) {
         epics.put(epic.getId(), epic);
-        StatusTask status;
 
         epicCheckStatus(epic);
 
@@ -83,12 +82,9 @@ public class ManagerTasks {
     }
 
     public EpicTusk getEpic(int id) {
-        if (tasks.containsKey(id)) {
-            return epics.get(id);
-        }
-
-        return null;
+        return epics.get(id);
     }
+
     public ArrayList<EpicTusk> getAllEpic() {
         return new ArrayList<>(epics.values());
     }
@@ -98,8 +94,9 @@ public class ManagerTasks {
         subEpic.setId(nextId++);
         subEpics.put(subEpic.getId(), subEpic);
 
-        EpicTusk epic = epics.get(subEpic.getSubId());
+        EpicTusk epic = epics.get(subEpic.getEpicID());
         epic.getEpicIds().add(subEpic.getId());
+
 
         epicCheckStatus(epic);
 
@@ -113,7 +110,7 @@ public class ManagerTasks {
         subEpics.put(subEpic.getId(), subEpic);
     }
 
-    public void removeSubtaskById (int id, ArrayList<EpicTusk> epics) {
+    public void removeSubtaskById(int id, ArrayList<EpicTusk> epics) {
         subEpics.remove(id);
         for (EpicTusk epic : epics) {
             if (epic.getEpicIds().contains(id)) {
@@ -125,17 +122,20 @@ public class ManagerTasks {
     }
 
     public void removeAllSubEpic() {
-        subEpics.clear();
-    }
+            for (EpicTusk epic : epics.values()) {
+                epic.getEpicIds().clear();
+                epicCheckStatus(epic);
+            }
+            subEpics.clear();
+        }
 
     public ArrayList<SubEpicTusk> getSubEpicsByEpicId(int id) {
         ArrayList<SubEpicTusk> subEpicsList = new ArrayList<>();
         for (SubEpicTusk subEpic : subEpics.values()) {
-            if (subEpic.getSubId() == id) {
+            if (subEpic.getEpicID() == id) {
                 subEpicsList.add(subEpic);
             }
         }
         return subEpicsList;
     }
-
 }

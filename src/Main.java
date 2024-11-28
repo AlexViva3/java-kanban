@@ -15,7 +15,17 @@ public class Main {
         SubEpicTusk subEpic2 = new SubEpicTusk("Написать проект спринта 5", "Написать проект спринта ", StatusTask.NEW);
         EpicTusk epic2 = new EpicTusk("Заказать вещи", "Заказать вещи", StatusTask.NEW);
         SubEpicTusk subEpic3 = new SubEpicTusk("Заказать шорты", "Заказать шорты", StatusTask.NEW);
-        
+        manager.addTask(task1);
+        manager.addTask(task2);
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+        manager.addSubEpic(subEpic1);
+        manager.addSubEpic(subEpic2);
+        manager.addSubEpic(subEpic3);
+        manager.removeTask(1);
+        manager.removeTask(2);
+
+
 
 
     }
