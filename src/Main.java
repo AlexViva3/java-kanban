@@ -2,11 +2,15 @@ import datapacks.EpicTusk;
 import datapacks.StatusTask;
 import datapacks.SubEpicTusk;
 import datapacks.Task;
-import management.ManagerTasks;
+import history.HistoryManager;
+import management.InMemoryTaskManager;
+import management.Managers;
+import management.TaskManager;
 
 public class Main {
     public static void main(String[] args) {
-        ManagerTasks manager = new ManagerTasks();
+        TaskManager manager = Managers.getDefault();
+        HistoryManager historyManager = Managers. getDefaultHistory();
 
         Task task1 = new Task("Завтрак", "Приготовить завтрак", StatusTask.NEW);
         Task task2 = new Task("Обед", "Приготовить обед", StatusTask.NEW);
