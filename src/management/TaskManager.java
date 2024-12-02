@@ -7,10 +7,12 @@ import datapacks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public interface TaskManager {
     void addTask(Task task);
 
     ArrayList<Task> getAllTasks();
+    List<Task> getHistory();
 
     void removeTask(Integer id);
 

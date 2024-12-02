@@ -1,7 +1,5 @@
 package management;
 
-import datapacks.EpicTusk;
-import datapacks.SubEpicTusk;
 import datapacks.Task;
 import history.HistoryManager;
 
@@ -18,26 +16,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (history.size() >= HISTORY_LIMIT) {
             history.remove(0);
         }
+        history.add(task);
 
 
     }
-
-    @Override
-    public void addEpicHistory(EpicTusk epic) {
-        if (history.size() >= HISTORY_LIMIT) {
-            history.remove(0);
-        }
-        history.add(epic);
-    }
-
-    @Override
-    public void addSubEpicHistory(SubEpicTusk subEpic) {
-        if (history.size() >= HISTORY_LIMIT) {
-            history.remove(0);
-        }
-        history.add(subEpic);
-    }
-
 
     @Override
     public List<Task> getHistory() {

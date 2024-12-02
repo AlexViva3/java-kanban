@@ -7,28 +7,32 @@ import history.HistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    private  HashMap<Integer, Task> tasks = new HashMap<>();
-    private  HashMap<Integer, EpicTusk> epics = new HashMap<>();
-    private  HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
-    HistoryManager historyManager = Managers. getDefaultHistory();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, EpicTusk> epics = new HashMap<>();
+    private final HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
+
     private int nextId = 0;
 
     @Override
     public void addTask(Task task) {
         task.setId(nextId++);
         tasks.put(task.getId(), task);
-        historyManager.addTaskHistory(task);
 
     }
 
     @Override
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return new ArrayList<>(historyManager.getHistory());
     }
 
     @Override
@@ -48,6 +52,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task takeTaskForId(int id) {
+        historyManager.addTaskHistory(tasks.get(id));
         return tasks.get(id);
     }
 
@@ -55,8 +60,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addEpic(EpicTusk epic) {
         epic.setId(nextId++);
         epics.put(epic.getId(), epic);
-
-        historyManager.addEpicHistory(epic);
 
     }
 
@@ -104,6 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public EpicTusk getEpic(int id) {
+        historyManager.addTaskHistory(epics.get(id));
         return epics.get(id);
     }
 
@@ -124,7 +128,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         epicCheckStatus(epic);
 
-        historyManager.addSubEpicHistory(subEpic);
 
     }
 
@@ -167,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subEpicsList.add(subEpic);
             }
         }
+        historyManager.addTaskHistory(subEpics.get(id));
         return subEpicsList;
     }
 
