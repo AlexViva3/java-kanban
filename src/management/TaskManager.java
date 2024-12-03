@@ -12,7 +12,6 @@ public interface TaskManager {
     void addTask(Task task);
 
     ArrayList<Task> getAllTasks();
-    List<Task> getHistory();
 
     void removeTask(Integer id);
 
@@ -48,5 +47,7 @@ public interface TaskManager {
 
     ArrayList<SubEpicTusk> getSubEpicsByEpicId(int id);
 
+    List<Task> getHistory();
 
+    SubEpicTusk getSubEpic(int id);
 }
