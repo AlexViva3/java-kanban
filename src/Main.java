@@ -10,7 +10,7 @@ import management.TaskManager;
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
-        HistoryManager historyManager = Managers. getDefaultHistory();
+        HistoryManager historyManager = Managers.getDefaultHistory();
 
         Task task1 = new Task("Завтрак", "Приготовить завтрак", StatusTask.NEW);
         Task task2 = new Task("Обед", "Приготовить обед", StatusTask.NEW);
@@ -27,10 +27,6 @@ public class Main {
         manager.addSubEpic(subEpic2);
         manager.addSubEpic(subEpic3);
         manager.removeTask(1);
-
-
-
-
 
     }
 }

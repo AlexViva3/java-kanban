@@ -170,12 +170,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubEpic() {
-            for (EpicTusk epic : epics.values()) {
-                epic.getEpicIds().clear();
-                epicCheckStatus(epic);
-            }
-            subEpics.clear();
+        for (EpicTusk epic : epics.values()) {
+            epic.getEpicIds().clear();
+            epicCheckStatus(epic);
         }
+        subEpics.clear();
+    }
 
     @Override
     public ArrayList<SubEpicTusk> getSubEpicsByEpicId(int id) {
@@ -188,10 +188,9 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.addTaskHistory(subEpics.get(id));
         return subEpicsList;
     }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
-
-
 }
