@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskCycler<T> {
+public class TaskHistoryCycler<T> {
     private Node<T> first;
     private Node<T> last;
     private Node<T> current;
