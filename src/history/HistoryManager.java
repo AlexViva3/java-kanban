@@ -6,8 +6,6 @@ import java.util.List;
 
     void addTaskHistory(Task task);
 
-    void remove(int id);
-
-    List<Task> getHistory();
+        List<Task> getHistory();
 
 }
