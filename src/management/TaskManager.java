@@ -50,4 +50,8 @@ public interface TaskManager {
     List<Task> getHistory();
 
     SubEpicTusk getSubEpic(int id);
+
+    void addTaskHistory(Task task);
+
+    void remove(int id);
 }
