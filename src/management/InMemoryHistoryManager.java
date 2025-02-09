@@ -2,7 +2,6 @@ package management;
 
 import datapacks.Task;
 import history.HistoryManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +15,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (history.size() >= HISTORY_LIMIT) history.removeFirst();
 
         history.add(task);
-
-
     }
 
     @Override
