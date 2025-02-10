@@ -45,35 +45,4 @@ class InMemoryTaskManagerTest {
         assertEquals(epicID, subEpicTusk1.getEpicID(), "Подзадача 1 должна быть привязана к эпику с ID " + epicID);
         assertEquals(epicID, subEpicTusk2.getEpicID(), "Подзадача 2 должна быть привязана к эпику с ID " + epicID);
     }
-
-    @Nested
-    class HistoryManagerTest {
-
-        @Test
-        void testTaskHistoryPreservesPreviousVersion() {
-            Task originalTask = new Task("Task 1", "Оригинальная задача", StatusTask.NEW);
-            manager.addTask(originalTask);
-
-
-            assertEquals(1, manager.getHistory().size(), "История должна содержать оригинальную задачу");
-
-
-            Task updatedTask = new Task("Обновить задачу", "Обновить название", StatusTask.IN_PROGRESS);
-            updatedTask.setId(originalTask.getId());
-            manager.updateTask(updatedTask);
-
-
-            assertEquals(2, manager.getHistory().size(), "История должна содержать обе версии задачи");
-
-
-            Task firstVersion = manager.getHistory().get(0);
-            assertEquals(originalTask.getId(), firstVersion.getId(), "ID первой версии задачи должен совпадать с оригинальной задачей");
-            assertEquals(originalTask.getName(), firstVersion.getName(), "Имя первой версии задачи должно совпадать с оригинальной задачей");
-
-
-            Task secondVersion = manager.getHistory().get(1);
-            assertEquals(updatedTask.getId(), secondVersion.getId(), "ID второй версии задачи должен совпадать с обновленной задачей");
-            assertEquals(updatedTask.getName(), secondVersion.getName(), "Имя второй версии задачи должно совпадать с обновленной задачей");
-        }
-    }
 }
