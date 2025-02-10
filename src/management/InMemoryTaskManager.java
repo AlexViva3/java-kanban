@@ -44,7 +44,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+
         tasks.put(task.getId(), task);
+
+        historyManager.addTaskHistory(task);
     }
 
     @Override
@@ -192,6 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
     @Override
     public void addTaskHistory(Task task) {
         if (taskCycler.contains(task)) {
@@ -213,5 +217,4 @@ public class InMemoryTaskManager implements TaskManager {
             taskCycler.removeNode(taskToRemove);
         }
     }
-
 }
