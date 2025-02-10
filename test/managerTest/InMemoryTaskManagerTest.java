@@ -51,30 +51,29 @@ class InMemoryTaskManagerTest {
 
         @Test
         void testTaskHistoryPreservesPreviousVersion() {
-
-            EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
-            manager.addEpic(epic);
-            int epicID = epic.getId();
+            Task originalTask = new Task("Task 1", "Оригинальная задача", StatusTask.NEW);
+            manager.addTask(originalTask);
 
 
-            SubEpicTusk subEpic = new SubEpicTusk("SubEpic 1", "Description", StatusTask.NEW, epic.getId());
-            manager.addSubEpic(subEpic);
+            assertEquals(1, manager.getHistory().size(), "История должна содержать оригинальную задачу");
 
 
-            SubEpicTusk updatedSubEpic = new SubEpicTusk("Updated SubEpic", "Updated Description", StatusTask.IN_PROGRESS, epic.getId());
-            updatedSubEpic.setId(subEpic.getId());
-            manager.updateSubEpic(updatedSubEpic);
+            Task updatedTask = new Task("Обновить задачу", "Обновить название", StatusTask.IN_PROGRESS);
+            updatedTask.setId(originalTask.getId());
+            manager.updateTask(updatedTask);
 
 
-            assertEquals(2, manager.getHistory().size(), "История должна содержать обе версии подзадачи");
+            assertEquals(2, manager.getHistory().size(), "История должна содержать обе версии задачи");
 
 
             Task firstVersion = manager.getHistory().get(0);
-            assertEquals(subEpic.getId(), firstVersion.getId(), "ID первой версии подзадачи должен совпадать с оригинальной подзадачей");
+            assertEquals(originalTask.getId(), firstVersion.getId(), "ID первой версии задачи должен совпадать с оригинальной задачей");
+            assertEquals(originalTask.getName(), firstVersion.getName(), "Имя первой версии задачи должно совпадать с оригинальной задачей");
 
 
             Task secondVersion = manager.getHistory().get(1);
-            assertEquals(updatedSubEpic.getId(), secondVersion.getId(), "ID второй версии подзадачи должен совпадать с обновленной подзадачей");
+            assertEquals(updatedTask.getId(), secondVersion.getId(), "ID второй версии задачи должен совпадать с обновленной задачей");
+            assertEquals(updatedTask.getName(), secondVersion.getName(), "Имя второй версии задачи должно совпадать с обновленной задачей");
         }
     }
 }
