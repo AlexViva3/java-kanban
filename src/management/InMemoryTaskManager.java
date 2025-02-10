@@ -44,7 +44,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+
         tasks.put(task.getId(), task);
+
+        historyManager.addTaskHistory(task);
     }
 
     @Override
