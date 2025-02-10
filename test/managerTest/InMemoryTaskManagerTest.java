@@ -51,27 +51,28 @@ class InMemoryTaskManagerTest {
 
         @Test
         void testTaskHistoryPreservesPreviousVersion() {
-            // Создаем эпик
+
             EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
             manager.addEpic(epic);
+            int epicID = epic.getId();
 
-            // Создаем подзадачу и добавляем её в менеджер
+
             SubEpicTusk subEpic = new SubEpicTusk("SubEpic 1", "Description", StatusTask.NEW, epic.getId());
             manager.addSubEpic(subEpic);
 
-            // Обновляем подзадачу
+
             SubEpicTusk updatedSubEpic = new SubEpicTusk("Updated SubEpic", "Updated Description", StatusTask.IN_PROGRESS, epic.getId());
-            updatedSubEpic.setId(subEpic.getId()); // Устанавливаем тот же ID
+            updatedSubEpic.setId(subEpic.getId());
             manager.updateSubEpic(updatedSubEpic);
 
-            // Проверяем, что история содержит обе версии подзадачи
+
             assertEquals(2, manager.getHistory().size(), "История должна содержать обе версии подзадачи");
 
-            // Проверяем, что первая версия совпадает с оригинальной подзадачей
+
             Task firstVersion = manager.getHistory().get(0);
             assertEquals(subEpic.getId(), firstVersion.getId(), "ID первой версии подзадачи должен совпадать с оригинальной подзадачей");
 
-            // Проверяем, что вторая версия — это обновленная подзадача
+
             Task secondVersion = manager.getHistory().get(1);
             assertEquals(updatedSubEpic.getId(), secondVersion.getId(), "ID второй версии подзадачи должен совпадать с обновленной подзадачей");
         }
