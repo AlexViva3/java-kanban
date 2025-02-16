@@ -4,7 +4,6 @@ import datapacks.SubEpicTusk;
 import datapacks.Task;
 import datapacks.StatusTask;
 import history.HistoryManager;
-import history.TaskHistoryCycler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, EpicTusk> epics = new HashMap<>();
     private final HashMap<Integer, SubEpicTusk> subEpics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-    private final TaskHistoryCycler<Task> taskCycler = new TaskHistoryCycler<>();
 
     private int nextId = 0;
 
@@ -34,11 +32,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(Integer id) {
-        tasks.remove(id);
+        Task task = tasks.remove(id);
+        historyManager.removeTask(task);
+
     }
 
     @Override
     public void removeAllTasks() {
+        for (Task task : tasks.values()) {
+            historyManager.removeTask(task);
+        }
         tasks.clear();
     }
 
@@ -47,13 +50,12 @@ public class InMemoryTaskManager implements TaskManager {
 
         tasks.put(task.getId(), task);
 
-        historyManager.addTaskHistory(task);
     }
 
     @Override
     public Task takeTaskForId(int id) {
         if (tasks.containsKey(id)) {
-            historyManager.addTaskHistory(tasks.get(id)); // Добавляем задачу в историю
+            historyManager.addTaskHistory(tasks.get(id));
         } else {
             System.out.println("Задача с ID " + id + " не существует. Добавление в историю невозможно.");
         }
@@ -97,14 +99,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpic(int id) {
-        final EpicTusk epic = epics.remove(id);
-        for (Integer subId : epic.getEpicIds()) {
-            subEpics.remove(subId);
+        EpicTusk epic = epics.remove(id);
+        for (Integer subEpicId : epic.getEpicIds()) {
+            SubEpicTusk subEpic = subEpics.remove(subEpicId);
+            historyManager.removeTask(subEpic);
         }
     }
 
     @Override
     public void removeAllEpic() {
+        for (EpicTusk epic : epics.values()) {
+            for (Integer subEpicId : epic.getEpicIds()) {
+                SubEpicTusk subEpic = subEpics.get(subEpicId);
+                historyManager.removeTask(subEpic);
+            }
+        }
         epics.clear();
         subEpics.clear();
     }
@@ -137,7 +146,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         epicCheckStatus(epic);
 
-
     }
 
     @Override
@@ -162,21 +170,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubtaskById(int id, ArrayList<EpicTusk> epics) {
-        subEpics.remove(id);
-        EpicTusk epic = epics.get(id); // Используйте epics.get(id) вместо epics.get(id)
-        if (epic != null) {
-            epic.getEpicIds().remove(Integer.valueOf(id));
-            epicCheckStatus(epic);
-        }
+        SubEpicTusk subEpic = subEpics.remove(id);
+            historyManager.removeTask(subEpic);
+
+            EpicTusk epic = epics.get(subEpic.getEpicID());
+                epic.getEpicIds().remove(Integer.valueOf(id));
+                epicCheckStatus(epic);
     }
 
     @Override
     public void removeAllSubEpic() {
+        for (SubEpicTusk subEpic : subEpics.values()) {
+            historyManager.removeTask(subEpic);
+        }
+        subEpics.clear();
+
         for (EpicTusk epic : epics.values()) {
             epic.getEpicIds().clear();
             epicCheckStatus(epic);
         }
-        subEpics.clear();
     }
 
     @Override
@@ -198,23 +210,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTaskHistory(Task task) {
-        if (taskCycler.contains(task)) {
-            taskCycler.removeNode(task);
+        if (historyManager.contains(task)) {
+            historyManager.removeNode(task);
         }
-        taskCycler.linkLast(task);
+        historyManager.linkLast(task);
     }
 
     @Override
-    public void remove(int id) {
+    public void removeTaskInHistory(int id) {
         Task taskToRemove = null;
-        for (Task task : taskCycler.getHistory()) {
+        for (Task task : historyManager.getHistory()) {
             if (task.getId() == id) {
                 taskToRemove = task;
                 break;
             }
         }
-        if (taskToRemove != null) {
-            taskCycler.removeNode(taskToRemove);
-        }
+
+            historyManager.removeNode(taskToRemove);
+
     }
 }

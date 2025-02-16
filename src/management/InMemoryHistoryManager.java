@@ -2,37 +2,122 @@ package management;
 
 import datapacks.Task;
 import history.HistoryManager;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_LIMIT = 10; // Лимит на 10 задач
-    private final List<Task> history = new ArrayList<>();
 
+
+    private Node<Task> first;
+    private Node<Task> last;
+    private Node<Task> current;
+    private final Map<Task, Node<Task>> nodeMap = new HashMap<>();
+
+    private static class Node<Task> {
+        Task task;
+        Node<Task> prev;
+        Node<Task> next;
+
+        public Node(Task task) {
+            this.task = task;
+        }
+    }
 
     @Override
     public void addTaskHistory(Task task) {
 
-        if (history.contains(task)) {
-            history.remove(task);
+        if (nodeMap.containsKey(task)) {
+            removeNode(task);
         }
 
-        // Добавляем задачу в историю
-        history.add(task);
+
+        linkLast(task);
 
 
-        if (history.size() > HISTORY_LIMIT) {
-            history.remove(0);
+        if (nodeMap.size() > HISTORY_LIMIT) {
+            removeNode(first.task);
         }
     }
 
     @Override
     public void remove(int id) {
-        history.removeIf(task -> task.getId() == id);
+        Task taskToRemove = null;
+        for (Task task : nodeMap.keySet()) {
+            if (task.getId() == id) {
+                taskToRemove = task;
+                break;
+            }
+        }
+        if (taskToRemove != null) {
+            removeNode(taskToRemove);
+        }
     }
 
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(history);
+        List<Task> history = new ArrayList<>();
+        if (first == null) {
+            return history;
+        }
+
+        Node<Task> current = first;
+        do {
+            history.add(current.task);
+            current = current.next;
+        } while (current != first);
+
+        return history;
+
     }
+
+    @Override
+    public void linkLast(Task task) {
+        Node<Task> newNode = new Node<>(task);
+        nodeMap.put(task, newNode);
+
+        if (last == null) {
+            first = newNode;
+        } else {
+            last.next = newNode;
+            newNode.prev = last;
+        }
+        last = newNode;
+
+        last.next = first;
+        first.prev = last;
+    }
+
+    @Override
+    public void removeNode(Task task) {
+        Node<Task> node = nodeMap.get(task);
+        if (node == null) return;
+
+        if (node == current) {
+            current = node.next != node ? node.next : null;
+        }
+
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+
+        if (node == first) first = node.next;
+        if (node == last) last = node.prev;
+
+        nodeMap.remove(task);
+    }
+
+    @Override
+    public boolean contains(Task task) {
+        return nodeMap.containsKey(task);
+    }
+
+    @Override
+    public void removeTask(Task task) {
+        removeNode(task);
+    }
+
 }
