@@ -12,7 +12,6 @@ import java.util.Map;
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_LIMIT = 10; // Лимит на 10 задач
 
-
     private Node<Task> first;
     private Node<Task> last;
     private Node<Task> current;
@@ -119,5 +118,4 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void removeTask(Task task) {
         removeNode(task);
     }
-
 }
