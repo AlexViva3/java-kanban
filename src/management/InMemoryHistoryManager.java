@@ -10,7 +10,8 @@ import java.util.Map;
 
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_LIMIT = 10; // Лимит на 10 задач
+
+    private static final int HISTORY_LIMIT = 10;
 
     private Node<Task> first;
     private Node<Task> last;
@@ -34,9 +35,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(task);
         }
 
-
         linkLast(task);
-
 
         if (nodeMap.size() > HISTORY_LIMIT) {
             removeNode(first.task);
@@ -46,12 +45,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Task taskToRemove = null;
+
         for (Task task : nodeMap.keySet()) {
             if (task.getId() == id) {
                 taskToRemove = task;
                 break;
             }
         }
+
         if (taskToRemove != null) {
             removeNode(taskToRemove);
         }
@@ -59,23 +60,26 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
+
         List<Task> history = new ArrayList<>();
+
         if (first == null) {
             return history;
         }
 
         Node<Task> current = first;
+
         do {
             history.add(current.task);
             current = current.next;
         } while (current != first);
 
         return history;
-
     }
 
     @Override
     public void linkLast(Task task) {
+
         Node<Task> newNode = new Node<>(task);
         nodeMap.put(task, newNode);
 
@@ -93,11 +97,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void removeNode(Task task) {
+
         Node<Task> node = nodeMap.get(task);
         if (node == null) return;
 
         if (node == current) {
             current = node.next != node ? node.next : null;
+
         }
 
         node.prev.next = node.next;
@@ -111,11 +117,14 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public boolean contains(Task task) {
+
         return nodeMap.containsKey(task);
     }
 
     @Override
     public void removeTask(Task task) {
+
         removeNode(task);
     }
+
 }
