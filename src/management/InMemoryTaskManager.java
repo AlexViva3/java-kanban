@@ -33,14 +33,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(Integer id) {
         Task task = tasks.remove(id);
-        historyManager.removeTask(task);
+        historyManager.remove(task.getId());
 
     }
 
     @Override
     public void removeAllTasks() {
         for (Task task : tasks.values()) {
-            historyManager.removeTask(task);
+            historyManager.remove(task.getId());
         }
         tasks.clear();
     }
@@ -102,7 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
         EpicTusk epic = epics.remove(id);
         for (Integer subEpicId : epic.getEpicIds()) {
             SubEpicTusk subEpic = subEpics.remove(subEpicId);
-            historyManager.removeTask(subEpic);
+            historyManager.remove(subEpic.getId());
         }
     }
 
@@ -111,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (EpicTusk epic : epics.values()) {
             for (Integer subEpicId : epic.getEpicIds()) {
                 SubEpicTusk subEpic = subEpics.get(subEpicId);
-                historyManager.removeTask(subEpic);
+                historyManager.remove(subEpic.getId());
             }
         }
         epics.clear();
@@ -171,17 +171,17 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeSubtaskById(int id, ArrayList<EpicTusk> epics) {
         SubEpicTusk subEpic = subEpics.remove(id);
-            historyManager.removeTask(subEpic);
+        historyManager.remove(subEpic.getId());
 
-            EpicTusk epic = epics.get(subEpic.getEpicID());
-                epic.getEpicIds().remove(Integer.valueOf(id));
-                epicCheckStatus(epic);
+        EpicTusk epic = epics.get(subEpic.getEpicID());
+        epic.getEpicIds().remove(Integer.valueOf(id));
+        epicCheckStatus(epic);
     }
 
     @Override
     public void removeAllSubEpic() {
         for (SubEpicTusk subEpic : subEpics.values()) {
-            historyManager.removeTask(subEpic);
+            historyManager.remove(subEpic.getId());
         }
         subEpics.clear();
 
@@ -210,23 +210,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTaskHistory(Task task) {
-        if (historyManager.contains(task)) {
-            historyManager.removeNode(task);
-        }
-        historyManager.linkLast(task);
+        historyManager.addTaskHistory(task);
     }
 
     @Override
     public void removeTaskInHistory(int id) {
-        Task taskToRemove = null;
-        for (Task task : historyManager.getHistory()) {
-            if (task.getId() == id) {
-                taskToRemove = task;
-                break;
-            }
-        }
-
-            historyManager.removeNode(taskToRemove);
-
+        historyManager.remove(id);
     }
 }

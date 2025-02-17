@@ -12,13 +12,4 @@ public interface HistoryManager {
     void remove(int id);
 
     List<Task> getHistory();
-
-    void linkLast(Task task);
-
-    void removeNode(Task task);
-
-    boolean contains(Task task);
-
-    void removeTask(Task task);
-
 }

@@ -11,14 +11,13 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private static final int HISTORY_LIMIT = 10;
 
     private Node<Task> first;
     private Node<Task> last;
     private Node<Task> current;
     private final Map<Task, Node<Task>> nodeMap = new HashMap<>();
 
-     private static class Node<TaskT> {
+    private static class Node<TaskT> {
         TaskT task;
         Node<TaskT> prev;
         Node<TaskT> next;
@@ -30,16 +29,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void addTaskHistory(Task task) {
-
-        if (nodeMap.containsKey(task)) {
-            removeNode(task);
-        }
-
         linkLast(task);
-
-        if (nodeMap.size() > HISTORY_LIMIT) {
-            removeNode(first.task);
-        }
     }
 
     @Override
@@ -77,9 +67,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history;
     }
 
-    @Override
-    public void linkLast(Task task) {
 
+    private void linkLast(Task task) {
         Node<Task> newNode = new Node<>(task);
         nodeMap.put(task, newNode);
 
@@ -95,36 +84,20 @@ public class InMemoryHistoryManager implements HistoryManager {
         first.prev = last;
     }
 
-    @Override
-    public void removeNode(Task task) {
-
+    private void removeNode(Task task) {
         Node<Task> node = nodeMap.get(task);
         if (node == null) return;
-
-        if (node == current) {
-            current = node.next != node ? node.next : null;
-
-        }
-
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
 
         if (node == first) first = node.next;
         if (node == last) last = node.prev;
 
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+
         nodeMap.remove(task);
     }
 
-    @Override
-    public boolean contains(Task task) {
-
+    private boolean contains(Task task) {
         return nodeMap.containsKey(task);
     }
-
-    @Override
-    public void removeTask(Task task) {
-
-        removeNode(task);
-    }
-
 }
