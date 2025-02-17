@@ -53,5 +53,5 @@ public interface TaskManager {
 
     void addTaskHistory(Task task);
 
-    void remove(int id);
+    void removeTaskInHistory(int id);
 }
