@@ -18,7 +18,7 @@ class SimpleTaskManagerTest {
         Task task = new Task("Купить молоко", "В магазине у дома", StatusTask.NEW);
         manager.addTask(task);
 
-        Task savedTask = manager.getTaskById(task.getId());
+        Task savedTask = manager.takeTaskForId(task.getId());
         assertEquals(task.getName(), savedTask.getName(), "Названия задач должны совпадать");
         assertEquals(task.getDescription(), savedTask.getDescription(), "Описания задач должны совпадать");
     }
@@ -55,7 +55,7 @@ class SimpleTaskManagerTest {
         task.setStatus(StatusTask.DONE);
         manager.updateTask(task);
 
-        assertEquals(StatusTask.DONE, manager.getTaskById(task.getId()).getStatus(),
+        assertEquals(StatusTask.DONE, manager.takeTaskForId(task.getId()).getStatus(),
                 "Статус задачи должен измениться на DONE");
     }
 
@@ -64,8 +64,8 @@ class SimpleTaskManagerTest {
         Task task = new Task("Task to delete", "Description", StatusTask.NEW);
         manager.addTask(task);
 
-        manager.deleteTask(task.getId());
+        manager.removeTask(task.getId());
 
-        assertNull(manager.getTaskById(task.getId()), "Задача должна быть удалена");
+        assertNull(manager.takeTaskForId(task.getId()), "Задача должна быть удалена");
     }
 }
