@@ -1,14 +1,13 @@
 package management;
+
 import datapacks.EpicTusk;
+import datapacks.StatusTask;
 import datapacks.SubEpicTusk;
 import datapacks.Task;
-import datapacks.StatusTask;
 import history.HistoryManager;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -22,7 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task) {
         task.setId(nextId++);
         tasks.put(task.getId(), task);
-
     }
 
     @Override
@@ -34,7 +32,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTask(Integer id) {
         Task task = tasks.remove(id);
         historyManager.remove(task.getId());
-
     }
 
     @Override
@@ -47,9 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-
         tasks.put(task.getId(), task);
-
     }
 
     @Override
@@ -66,7 +61,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addEpic(EpicTusk epic) {
         epic.setId(nextId++);
         epics.put(epic.getId(), epic);
-
     }
 
     @Override
@@ -86,7 +80,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(StatusTask.DONE);
         }
-
     }
 
     @Override
@@ -94,7 +87,6 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(epic.getId(), epic);
 
         epicCheckStatus(epic);
-
     }
 
     @Override
@@ -136,16 +128,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubEpic(SubEpicTusk subEpic) {
-
         subEpic.setId(nextId++);
         subEpics.put(subEpic.getId(), subEpic);
 
-        EpicTusk epic = epics.get(subEpic.getEpicID());
+        EpicTusk epic = epics.get(subEpic.getEpicId());
         epic.getEpicIds().add(subEpic.getId());
 
-
         epicCheckStatus(epic);
-
     }
 
     @Override
@@ -158,7 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (subEpics.containsKey(id)) {
             historyManager.addTaskHistory(subEpics.get(id));
         } else {
-            System.out.println("Подзадача Эпика с ID " + id + " не существует. Добавление в историю невозможно.");
+            System.out.println("Подзадача Эпика с ID " + id + " не существует. " +
+                    "Добавление в историю невозможно.");
         }
         return subEpics.get(id);
     }
@@ -173,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
         SubEpicTusk subEpic = subEpics.remove(id);
         historyManager.remove(subEpic.getId());
 
-        EpicTusk epic = epics.get(subEpic.getEpicID());
+        EpicTusk epic = epics.get(subEpic.getEpicId());
         epic.getEpicIds().remove(Integer.valueOf(id));
         epicCheckStatus(epic);
     }
@@ -195,7 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<SubEpicTusk> getSubEpicsByEpicId(int id) {
         ArrayList<SubEpicTusk> subEpicsList = new ArrayList<>();
         for (SubEpicTusk subEpic : subEpics.values()) {
-            if (subEpic.getEpicID() == id) {
+            if (subEpic.getEpicId() == id) {
                 subEpicsList.add(subEpic);
             }
         }

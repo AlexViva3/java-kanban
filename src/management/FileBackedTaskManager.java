@@ -1,8 +1,10 @@
 package management;
 
-import datapacks.*;
-
-
+import datapacks.EpicTusk;
+import datapacks.StatusTask;
+import datapacks.SubEpicTusk;
+import datapacks.Task;
+import datapacks.TaskType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-
     private final Path file;
 
     public FileBackedTaskManager(Path file) {
@@ -33,14 +34,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 task.getStatus().name(),
                 task.getDescription(),
                 task instanceof SubEpicTusk ?
-                        String.valueOf(((SubEpicTusk) task).getEpicID()) : ""
+                        String.valueOf(((SubEpicTusk) task).getEpicId()) : ""
         };
 
         return String.join(",", fields);
     }
 
     public Task fromString(String value) {
-
         if (value == null || value.isEmpty()) {
             return null;
         }
@@ -77,9 +77,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
-
         }
-
     }
 
     private void save() {
@@ -98,13 +96,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-
-            System.err.println("Ошибка сохранения: " + e.getMessage()); // Использую System.err для вывода ошибок, так как вычитал, что он лучше для вывода ошибок :))
+            System.err.println("Ошибка сохранения: " + e.getMessage());
+            // Использую System.err для вывода ошибок
         }
     }
 
     public void load() {
-
         try (BufferedReader reader = Files.newBufferedReader(file)) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -121,7 +118,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Ошибка сохранения: " + e.getMessage()); // Использую System.err для вывода ошибок, так как вычитал, что он лучше для вывода ошибок :))
+            System.err.println("Ошибка сохранения: " + e.getMessage());
+            // Использую System.err для вывода ошибок
         }
     }
 

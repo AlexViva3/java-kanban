@@ -2,16 +2,12 @@ package management;
 
 import datapacks.Task;
 import history.HistoryManager;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class InMemoryHistoryManager implements HistoryManager {
-
-
     private Node<Task> first;
     private Node<Task> last;
     private Node<Task> current;
@@ -50,7 +46,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-
         List<Task> history = new ArrayList<>();
 
         if (first == null) {
@@ -66,7 +61,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         return history;
     }
-
 
     private void linkLast(Task task) {
         Node<Task> newNode = new Node<>(task);
