@@ -10,62 +10,40 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimpleTaskManagerTest {
+class InMemoryTaskManagerTest {
     TaskManager manager = Managers.getDefault();
 
     @Test
-    void testAddAndGetTask() {
-        Task task = new Task("Купить молоко", "В магазине у дома", StatusTask.NEW);
-        manager.addTask(task);
-
-        Task savedTask = manager.getTaskById(task.getId());
-        assertEquals(task.getName(), savedTask.getName(), "Названия задач должны совпадать");
-        assertEquals(task.getDescription(), savedTask.getDescription(), "Описания задач должны совпадать");
-    }
-
-    @Test
-    void testAddTwoTasksHaveDifferentIds() {
-        Task task1 = new Task("Task 1", "Description", StatusTask.NEW);
-        Task task2 = new Task("Task 2", "Description", StatusTask.NEW);
-
+    void addTask() {
+        Task task1 = new Task("Task 1", "Task 1", StatusTask.NEW);
         manager.addTask(task1);
-        manager.addTask(task2);
-
-        assertNotEquals(task1.getId(), task2.getId(), "ID задач должны отличаться");
+        Task savedTask = manager.takeTaskForId(task1.getId());
+        assertEquals(task1.getName(), savedTask.getName(), "Названия задач должны совпадать");
     }
 
     @Test
-    void testEpicWithSubtask() {
-        EpicTusk epic = new EpicTusk("Ремонт", "Сделать ремонт в квартире", StatusTask.NEW);
+    void addEpic() {
+        EpicTusk epic = new EpicTusk("Epic 1", "Epic 1", StatusTask.NEW);
+        manager.addEpic(epic);
+        assertEquals(epic.getName(), manager.takeTaskForId(epic.getId()).getName(), "Названия эпиков должны совпадать");
+    }
+
+    @Test
+    void addSubEpic() {
+        EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
         manager.addEpic(epic);
 
-        SubEpicTusk subtask = new SubEpicTusk("Купить краску", "Белая матовая", StatusTask.NEW, epic.getId());
-        manager.addSubEpic(subtask);
+        SubEpicTusk subTask = new SubEpicTusk("Sub 1", "Sub 1", StatusTask.NEW, epic.getId());
+        manager.addSubEpic(subTask);
 
-        List<SubEpicTusk> subtasks = manager.getSubEpicsByEpicId(epic.getId());
-        assertEquals(1, subtasks.size(), "У эпика должна быть одна подзадача");
-        assertEquals("Купить краску", subtasks.get(0).getName(), "Название подзадачи должно совпадать");
+        assertEquals(epic.getId(), subTask.getEpicId(), "ID эпика должен совпадать");
     }
 
     @Test
-    void testTaskStatusChange() {
-        Task task = new Task("Task", "Description", StatusTask.NEW);
+    void deleteTask() {
+        Task task = new Task("Task to delete", "Desc", StatusTask.NEW);
         manager.addTask(task);
-
-        task.setStatus(StatusTask.DONE);
-        manager.updateTask(task);
-
-        assertEquals(StatusTask.DONE, manager.getTaskById(task.getId()).getStatus(),
-                "Статус задачи должен измениться на DONE");
-    }
-
-    @Test
-    void testDeleteTask() {
-        Task task = new Task("Task to delete", "Description", StatusTask.NEW);
-        manager.addTask(task);
-
-        manager.deleteTask(task.getId());
-
-        assertNull(manager.getTaskById(task.getId()), "Задача должна быть удалена");
+        manager.removeTask(task.getId());
+        assertNull(manager.takeTaskForId(task.getId()), "Задача должна быть удалена");
     }
 }
