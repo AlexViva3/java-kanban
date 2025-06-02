@@ -1,48 +1,85 @@
 package management;
+
 import datapacks.EpicTusk;
 import datapacks.SubEpicTusk;
 import datapacks.StatusTask;
 import datapacks.Task;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class SimpleTaskManagerTest {
+    // Создаём менеджер для тестов
     TaskManager manager = Managers.getDefault();
 
-
     @Test
-    void addTask() {
-        Task task1 = new Task("Task 1", "Task 1", StatusTask.NEW);
-        manager.addTask(task1);
-        manager.addTask(task1);
-        assertEquals(task1, task1, "Экземпляры Task с одинаковым id должны быть равны");
+    void testAddAndGetTask() {
+        // 1. Создаём задачу
+        Task task = new Task("Купить молоко", "В магазине у дома", StatusTask.NEW);
+
+        // 2. Добавляем в менеджер
+        manager.addTask(task);
+
+        // 3. Проверяем, что задача добавилась
+        Task savedTask = manager.getTaskById(task.getId());
+
+        // 4. Проверяем, что это та же самая задача
+        assertEquals(task, savedTask, "Задачи должны быть одинаковыми");
     }
 
     @Test
-    void addEpic() {
-        EpicTusk epicTusk = new EpicTusk("EpicTusk 1", "EpicTusk 1", StatusTask.NEW);
-        manager.addEpic(epicTusk);
-        manager.addEpic(epicTusk);
-        assertEquals(epicTusk, epicTusk, "Экземпляры EpicTusk с одинаковым id должны быть равны");
+    void testAddTwoTasksHaveDifferentIds() {
+        Task task1 = new Task("Task 1", "Description", StatusTask.NEW);
+        Task task2 = new Task("Task 2", "Description", StatusTask.NEW);
+
+        manager.addTask(task1);
+        manager.addTask(task2);
+
+        // Проверяем, что ID разные
+        assertNotEquals(task1.getId(), task2.getId(), "ID задач должны отличаться");
     }
 
     @Test
-    void addSubEpicsTusk() {
-        EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
+    void testEpicWithSubtask() {
+        // 1. Создаём эпик
+        EpicTusk epic = new EpicTusk("Ремонт", "Сделать ремонт в квартире", StatusTask.NEW);
         manager.addEpic(epic);
-        int epicID = epic.getId();
 
-        SubEpicTusk subEpicTusk1 = new SubEpicTusk("SubEpicTusk 1", "SubEpicTusk 1", StatusTask.NEW, epicID);
-        SubEpicTusk subEpicTusk2 = new SubEpicTusk("SubEpicTusk 2", "SubEpicTusk 2", StatusTask.NEW, epicID);
+        // 2. Создаём подзадачу для этого эпика
+        SubEpicTusk subtask = new SubEpicTusk("Купить краску", "Белая матовая", StatusTask.NEW, epic.getId());
+        manager.addSubEpic(subtask);
 
-        manager.addSubEpic(subEpicTusk1);
-        manager.addSubEpic(subEpicTusk2);
+        // 3. Проверяем, что подзадача привязана к эпику
+        assertEquals(epic.getId(), subtask.getEpicID(), "Подзадача должна быть привязана к эпику");
 
-        assertEquals(2, manager.getSubEpicTasks().size(), "Должно быть две подзадачи");
+        // 4. Проверяем, что эпик знает о своей подзадаче
+        assertEquals(1, manager.getSubEpicsByEpicId(epic.getId()).size(),
+                "У эпика должна быть одна подзадача");
+    }
 
-        assertEquals(epicID, subEpicTusk1.getEpicID(), "Подзадача 1 должна быть привязана к эпику с ID " + epicID);
-        assertEquals(epicID, subEpicTusk2.getEpicID(), "Подзадача 2 должна быть привязана к эпику с ID " + epicID);
+    @Test
+    void testTaskStatusChange() {
+        Task task = new Task("Task", "Description", StatusTask.NEW);
+        manager.addTask(task);
+
+        // Меняем статус
+        task.setStatus(StatusTask.DONE);
+        manager.updateTask(task);
+
+        // Проверяем, что статус изменился
+        assertEquals(StatusTask.DONE, manager.getTaskById(task.getId()).getStatus(),
+                "Статус задачи должен измениться на DONE");
+    }
+
+    @Test
+    void testDeleteTask() {
+        Task task = new Task("Task to delete", "Description", StatusTask.NEW);
+        manager.addTask(task);
+
+        // Удаляем задачу
+        manager.deleteTask(task.getId());
+
+        // Проверяем, что задача удалилась
+        assertNull(manager.getTaskById(task.getId()), "Задача должна быть удалена");
     }
 }
