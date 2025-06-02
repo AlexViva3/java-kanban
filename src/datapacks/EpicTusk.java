@@ -16,6 +16,9 @@ public class EpicTusk extends Task {
     public void setEpicIds(ArrayList<Integer> subIDs) {
         this.subIDs = subIDs;
     }
-    // это эпик
+
+    public TaskType getType() {
+        return TaskType.EPIC;  // Для Task
+    }
 }
 

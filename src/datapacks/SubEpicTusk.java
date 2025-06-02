@@ -2,7 +2,7 @@ package datapacks;
 
 public class SubEpicTusk extends Task {
     public SubEpicTusk(String name, String description, StatusTask status, int epicID) {
-        super(name, description, status);
+        super( name, description, status);
         this.epicID = epicID;
     }
 
@@ -16,4 +16,7 @@ public class SubEpicTusk extends Task {
 
     private int epicID;
 
+    public TaskType getType() {
+        return TaskType.SUBTASK;  // Для Task
+    }
 }

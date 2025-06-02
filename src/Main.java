@@ -8,9 +8,9 @@ public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-        Task task1 = new Task("Завтрак", "Приготовить завтрак", StatusTask.NEW);
+        Task task1 = new Task( "Завтрак", "Приготовить завтрак", StatusTask.NEW);
         Task task2 = new Task("Обед", "Приготовить обед", StatusTask.NEW);
-        EpicTusk epic1 = new EpicTusk("Написать код проекта", "Написать 2 проекта", StatusTask.NEW);
+        EpicTusk epic1 = new EpicTusk( "Написать код проекта", "Написать 2 проекта", StatusTask.NEW);
 
         manager.addTask(task1);
         manager.addTask(task2);

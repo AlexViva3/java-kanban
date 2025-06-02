@@ -7,9 +7,9 @@ public class Task { // Это задача
     private StatusTask status;
 
     public Task(String name, String description, StatusTask status) {
-        this.status = status;
-        this.description = description;
         this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
     public int getId() {
@@ -38,5 +38,9 @@ public class Task { // Это задача
 
     public void setStatus(StatusTask status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 }
