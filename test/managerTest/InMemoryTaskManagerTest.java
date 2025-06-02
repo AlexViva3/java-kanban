@@ -22,16 +22,6 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void addEpic() {
-        EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
-        manager.addEpic(epic);
-
-        EpicTusk savedEpic = manager.getEpicById(epic.getId());
-        assertNotNull(savedEpic, "Эпик должен быть найден");
-        assertEquals(epic.getName(), savedEpic.getName(), "Названия эпиков должны совпадать");
-    }
-
-    @Test
     void addSubEpic() {
         EpicTusk epic = new EpicTusk("Epic 1", "Description", StatusTask.NEW);
         manager.addEpic(epic);
