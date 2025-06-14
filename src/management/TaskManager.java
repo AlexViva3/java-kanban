@@ -3,10 +3,8 @@ package management;
 import datapacks.EpicTusk;
 import datapacks.SubEpicTusk;
 import datapacks.Task;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public interface TaskManager {
     void addTask(Task task);
@@ -53,5 +51,5 @@ public interface TaskManager {
 
     void addTaskHistory(Task task);
 
-    void remove(int id);
+    void removeTaskInHistory(int id);
 }

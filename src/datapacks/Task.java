@@ -2,14 +2,14 @@ package datapacks;
 
 public class Task { // Это задача
     private int id;
-    private String name;//Название задачи
-    private String description;// Описание задачи
+    private String name;
+    private final String description;
     private StatusTask status;
 
     public Task(String name, String description, StatusTask status) {
-        this.status = status;
-        this.description = description;
         this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
     public int getId() {
@@ -38,5 +38,9 @@ public class Task { // Это задача
 
     public void setStatus(StatusTask status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 }
