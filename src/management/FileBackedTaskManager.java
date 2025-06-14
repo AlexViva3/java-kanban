@@ -5,6 +5,7 @@ import datapacks.StatusTask;
 import datapacks.SubEpicTusk;
 import datapacks.Task;
 import datapacks.TaskType;
+import exceptions.ManagerSaveException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,14 +28,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public String toString(Task task) {
+        String extraField = "";
+
+        if (task.getType() == TaskType.SUBTASK) {
+            SubEpicTusk subtask = (SubEpicTusk) task;
+            extraField = String.valueOf(subtask.getEpicId());
+        }
+
         String[] fields = {
                 String.valueOf(task.getId()),
                 task.getType().name(),
                 task.getName(),
                 task.getStatus().name(),
                 task.getDescription(),
-                task instanceof SubEpicTusk ?
-                        String.valueOf(((SubEpicTusk) task).getEpicId()) : ""
+                extraField
         };
 
         return String.join(",", fields);
@@ -96,8 +103,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            System.err.println("Ошибка сохранения: " + e.getMessage());
-            // Использую System.err для вывода ошибок
+            throw new ManagerSaveException("Ошибка при записи в файл: " + e.getMessage());
         }
     }
 
@@ -108,18 +114,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(line);
                 if (task == null) continue;
 
-                // Используем публичные методы добавления, а не геттеры!
                 if (task instanceof EpicTusk) {
-                    addEpic((EpicTusk) task);  // Используем метод addEpic()
+                    addEpic((EpicTusk) task);
                 } else if (task instanceof SubEpicTusk) {
-                    addSubEpic((SubEpicTusk) task);  // Используем метод addSubEpic()
+                    addSubEpic((SubEpicTusk) task);
                 } else {
-                    addTask(task);  // Используем метод addTask()
+                    addTask(task);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Ошибка сохранения: " + e.getMessage());
-            // Использую System.err для вывода ошибок
+            throw new ManagerSaveException("Ошибка при записи в файл: " + e.getMessage());
         }
     }
 
